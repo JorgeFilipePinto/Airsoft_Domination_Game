@@ -2,8 +2,9 @@
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
 #include <DNSServer.h>
+#include "config/config.h"
 
-// Configuração do modo de rede
+// Configuração do modo de rede (será lido do pin ao iniciar)
 bool selfHost = true; // true = Access Point | false = Conectar a rede existente
 
 // WiFi credentials para modo Client (selfHost = false)
@@ -212,6 +213,20 @@ void Webserver(void *parameter);
 void setup()
 {
     Serial.begin(115200);
+    
+    // Configurar pin para leitura do modo de operação
+    pinMode(SELF_HOST_PIN, INPUT_PULLUP);
+    delay(100); // Pequeno delay para estabilizar a leitura
+    
+    // Ler o estado do pin para definir o modo de operação
+    // HIGH (pin desconectado ou com jumper) = Access Point (self-host)
+    // LOW (pin conectado ao GND) = Client (conectar a rede existente)
+    selfHost = digitalRead(SELF_HOST_PIN);
+    
+    Serial.println("=================================");
+    Serial.print("Modo selecionado: ");
+    Serial.println(selfHost ? "ACCESS POINT (Self-Host)" : "CLIENT (Rede Existente)");
+    Serial.println("=================================");
 
     if (selfHost)
     {

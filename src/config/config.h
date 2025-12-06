@@ -10,6 +10,9 @@
 #define LED_GREEN_PIN 2
 #define LED_BLUE_PIN 4
 
+// Pin para definir modo de operação (self-host)
+// HIGH = Access Point (self-host) | LOW = Client (conectar a rede existente)
+#define SELF_HOST_PIN 25
 
 #define CAPTURE_ZONE 5000
 #define NEUTRALIZE_ZONE 10000
