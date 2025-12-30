@@ -1,28 +1,19 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#pragma once
 
-#define NFC_SDA_PIN 21
-#define NFC_SCL_PIN 22
-#define NFC_RST_PIN 5
+//============================ UPDATE CONFIGURATIONS ============================//
+static constexpr bool WIFI_UPDATE_ENABLED = true;
+static constexpr const char WIFI_ATTEMPTS = 20;
+static constexpr const unsigned long UPLOAD_TIMEOUT_MS = 300000; // 5 minutos em milissegundos
+static constexpr const char *WIFI_SSID = "MEO-9E52D0";
+static constexpr const char *WIFI_PASSWORD = "Jorge19955991";
 
+static constexpr const char *AP_SSID = "ESP32-RFID";
+static constexpr const char *AP_PASSWORD = "12345678";
 
-#define LED_RED_PIN 15
-#define LED_GREEN_PIN 2
-#define LED_BLUE_PIN 4
+static constexpr const int WEB_SERVER_PORT = 80;
+static constexpr const char *WEB_USER = "admin";
+static constexpr const char *WEB_PASS = "admin";
 
-// Pin para definir modo de operação (self-host)
-// HIGH = Access Point (self-host) | LOW = Client (conectar a rede existente)
-#define SELF_HOST_PIN 25
-
+//===================================================================Game timings===================================================================
 #define CAPTURE_ZONE 5000
 #define NEUTRALIZE_ZONE 10000
-
-
-#define MAX_TEAMS 2
-
-
-#define WIFI_SSID "MontainWolves_Domination"
-#define WIFI_PASSWORD "Domination2026"
-
-
-#endif
