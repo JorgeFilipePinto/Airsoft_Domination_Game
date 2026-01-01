@@ -129,12 +129,17 @@ void Game::loop()
     {
         if (newDataAvailable)
         {
-            printPoints();
+            printPoints("Team 1");
             newDataAvailable = false;
         }
         if (buttons.isPressed(team2Button))
         {
-            teamIsCapturingZone(true);
+            lastCurrentGameState = currentGameState;
+            const bool captured = teamIsCapturingZone(true);
+            if(!captured)
+            {
+                newDataAvailable = true;
+            }
         }
         break;
     }
@@ -142,22 +147,20 @@ void Game::loop()
     {
         if (newDataAvailable)
         {
-            printPoints();
+            printPoints("Team 2");
             newDataAvailable = false;
         }
         if (buttons.isPressed(team1Button))
         {
-            teamIsCapturingZone(true);
+            lastCurrentGameState = currentGameState;
+            const bool captured = teamIsCapturingZone(true);
+            if(!captured)
+            {
+                newDataAvailable = true;
+            }
         }
         break;
     }
-    case FINISHED:
-    {
-        // Lógica para o estado FINISHED
-        break;
-    }
-    default:
-        break;
     }
     printGameState();
 }
@@ -180,7 +183,7 @@ void Game::printGameState()
 }
 
 
-void Game::printPoints()
+void Game::printPoints(String teamName)
 {
     lastPointsTeam1 = pointsTeam1;
     lastPointsTeam2 = pointsTeam2;
@@ -188,10 +191,11 @@ void Game::printPoints()
     lcd.clearLine(2);
     lcd.clearLine(3);
 
-    lcd.printAt("Captured by Team 2", 1, 1);
+    lcd.printAt("Captured by " + teamName, 1, 1);
     lcd.printAt("Team1: " + String(pointsTeam1) + "   ", 0, 2);
     lcd.printAt("Team2: " + String(pointsTeam2) + "   ", 0, 3);
 }
+
 
 bool Game::teamIsCapturingZone(bool isNeutralizing)
 {
@@ -202,6 +206,7 @@ bool Game::teamIsCapturingZone(bool isNeutralizing)
 
     if (buttons.isPressed(team1Button))
     {
+        newDataAvailable = true;
         const bool captured = capturing("Team 1", team1Button, pointsTeam1, pointsTeam2, isNeutralizing);
         if (captured)
         {
@@ -214,6 +219,7 @@ bool Game::teamIsCapturingZone(bool isNeutralizing)
 
     if (buttons.isPressed(team2Button))
     {
+        newDataAvailable = true;
         const bool captured = capturing("Team 2", team2Button, pointsTeam2, pointsTeam1, isNeutralizing);
         if (captured)
         {
@@ -234,7 +240,7 @@ bool Game::capturing(String teamName, uint8_t teamButton, int &teamPoints, int &
         lcd.clearLine(1);
         lcd.clearLine(2);
         lcd.clearLine(3);
-        lcd.printAt(teamName + (isNeutralizing ? " is neutralizing" : " is capturing"), 1, 1);
+        lcd.printAt((isNeutralizing ? "Neutralizing" : teamName + " is capturing"), (isNeutralizing ? 3 : 1), 1);
         newDataAvailable = false;
     }
 
@@ -245,7 +251,10 @@ bool Game::capturing(String teamName, uint8_t teamButton, int &teamPoints, int &
         {
             if (!buttons.isPressed(teamButton))
             {
-                (isNeutralizing ? teamPoints += 50 : opponentPoints += 50);
+                if(lastCurrentGameState != NEUTRALIZED)
+                {
+                    (isNeutralizing ? teamPoints += 50 : opponentPoints += 50);
+                }
                 return false;
             }
             lcd.drawLoadingBar(i, j);
@@ -253,7 +262,7 @@ bool Game::capturing(String teamName, uint8_t teamButton, int &teamPoints, int &
         }
         delay(25);
     }
-    (isNeutralizing ? teamPoints += 100 : teamPoints += 0);
+    (isNeutralizing ? teamPoints += 0 : teamPoints += 100);
 
     return true;
 }

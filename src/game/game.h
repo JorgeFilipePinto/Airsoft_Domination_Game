@@ -10,9 +10,8 @@ enum GameState
     IDLE,
     CAPTURING,
     NEUTRALIZED,
-    CAPTURED2,
     CAPTURED1,
-    FINISHED
+    CAPTURED2
 };
 
 class Game
@@ -43,7 +42,7 @@ private:
 
 
     void printGameState();
-    void printPoints();
+    void printPoints(String teamName);
     void loop();
     bool capturing(String teamName, uint8_t teamButton, int &teamPoints, int &opponentPoints, bool isNeutralizing = false);
     bool teamIsCapturingZone(bool isNeutralizing = false);
