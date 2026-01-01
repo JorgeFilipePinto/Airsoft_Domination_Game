@@ -24,6 +24,9 @@ void updateIsEnable(void *parameter)
                 break;
             }
         }
+        
+        // Adicionar delay para evitar watchdog reset
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
 
     if (timeoutReached || !WIFI_UPDATE_ENABLED)

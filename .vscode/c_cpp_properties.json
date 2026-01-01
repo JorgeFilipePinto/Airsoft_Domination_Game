@@ -12,6 +12,8 @@
                 "/Users/jorgepinto/Desktop/Domination/Airsoft_Domination_Game/src",
                 "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
                 "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/FS/src",
+                "/Users/jorgepinto/Desktop/Domination/Airsoft_Domination_Game/.pio/libdeps/esp32dev/LiquidCrystal",
+                "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                 "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/ArduinoOTA/src",
                 "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/Update/src",
                 "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/ESPmDNS/src",
@@ -239,7 +241,6 @@
                 "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/USB/src",
                 "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                 "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
-                "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                 ""
             ],
             "browse": {
@@ -249,6 +250,8 @@
                     "/Users/jorgepinto/Desktop/Domination/Airsoft_Domination_Game/src",
                     "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
                     "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/FS/src",
+                    "/Users/jorgepinto/Desktop/Domination/Airsoft_Domination_Game/.pio/libdeps/esp32dev/LiquidCrystal",
+                    "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                     "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/ArduinoOTA/src",
                     "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/Update/src",
                     "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/ESPmDNS/src",
@@ -476,7 +479,6 @@
                     "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/USB/src",
                     "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                     "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
-                    "/Users/jorgepinto/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                     ""
                 ]
             },
