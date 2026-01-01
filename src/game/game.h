@@ -40,13 +40,12 @@ private:
     GameState lastCurrentGameState = IDLE;
     bool team1InZone = false;
     bool team2InZone = false;
-    bool isLoading = false;
 
 
     void printGameState();
+    void printPoints();
     void loop();
-    bool isCapturing(String teamName, uint8_t teamButton, int &teamPoints, int &opponentPoints);
-    void teamIsCapturingZone();
-    bool isNeutralizing();
+    bool capturing(String teamName, uint8_t teamButton, int &teamPoints, int &opponentPoints, bool isNeutralizing = false);
+    bool teamIsCapturingZone(bool isNeutralizing = false);
     void isCaptured();
 };

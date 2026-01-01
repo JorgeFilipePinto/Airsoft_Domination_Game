@@ -45,11 +45,11 @@ void LiquidDysplay2004::initLoadingChars()
     byte p75[] = {B11100, B11100, B11100, B11100, B11100, B11100, B11100, B11100};
     byte full[] = {B11111, B11111, B11111, B11111, B11111, B11111, B11111, B11111};
 
-    lcd->createChar(0, empty);
-    lcd->createChar(1, p25);
-    lcd->createChar(2, p50);
-    lcd->createChar(3, p75);
-    lcd->createChar(4, full);
+    lcd->createChar(1, empty);
+    lcd->createChar(2, p25);
+    lcd->createChar(3, p50);
+    lcd->createChar(4, p75);
+    lcd->createChar(5, full);
 }
 
 
