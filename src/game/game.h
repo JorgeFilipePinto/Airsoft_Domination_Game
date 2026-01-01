@@ -8,10 +8,8 @@
 enum GameState
 {
     IDLE,
-    CAPTURING1,
-    CAPTURING2,
-    NEUTRALIZING1,
-    NEUTRALIZING2,
+    CAPTURING,
+    NEUTRALIZED,
     CAPTURED2,
     CAPTURED1,
     FINISHED
@@ -23,9 +21,14 @@ public:
     GameState currentGameState = IDLE;
     int pointsTeam1;
     int pointsTeam2;
-    int team1Button = 25;
-    int team2Button = 26;
-    Buttons buttons = Buttons(team1Button, team2Button, "NC", "team1", "team2");
+    int lastPointsTeam1 = 0;
+    int lastPointsTeam2 = 0;
+
+    int team1Button = 36;
+    int team2Button = 39;
+
+    bool newDataAvailable = true;
+    Buttons buttons = Buttons(team1Button, team2Button, "NO", "team1", "team2");
     LEDs leds = LEDs(12, 13, 14);
     Buzzer buzzer = Buzzer(15);
     LiquidDysplay2004 lcd;
@@ -34,12 +37,15 @@ public:
 
 private:
     static Game *instance;
-
+    GameState lastCurrentGameState = IDLE;
     bool team1InZone = false;
     bool team2InZone = false;
+    bool isLoading = false;
 
+
+    void printGameState();
     void loop();
-    bool isCapturing();
+    bool isCapturing(String teamName, uint8_t teamButton, int &teamPoints, int &opponentPoints);
     void teamIsCapturingZone();
     bool isNeutralizing();
     void isCaptured();

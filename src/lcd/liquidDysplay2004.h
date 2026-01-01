@@ -11,6 +11,10 @@ class LiquidDysplay2004 {
         void init();
         void clear();
         void print(MessageStruct* messages, uint8_t count);
+        void printAt(String message, uint8_t x, uint8_t y);
+        void clearLine(uint8_t line);
+        void initLoadingChars();
+        void drawLoadingBar(uint8_t position, uint8_t stage);
 
     private:
         LiquidCrystal_I2C* lcd;

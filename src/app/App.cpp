@@ -21,7 +21,7 @@ void app_update(void)
 void app_init(void)
 {
     Serial.begin(115200);
-    delay(1000);
+    delay(250);
     game.init();
 }
 
