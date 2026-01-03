@@ -23,13 +23,14 @@ public:
     int lastPointsTeam1 = 0;
     int lastPointsTeam2 = 0;
 
-    int team1Button = 36;
-    int team2Button = 39;
+    int team1Button = 23;
+    int team2Button = 19;
 
     bool newDataAvailable = true;
-    Buttons buttons = Buttons(team1Button, team2Button, "NO", "team1", "team2");
+    bool changeTeam = false;
+    Buttons buttons = Buttons(team1Button, team2Button, "NC", "team1", "team2");
     LEDs leds = LEDs(12, 13, 14);
-    Buzzer buzzer = Buzzer(15);
+    Buzzer buzzer = Buzzer(18);
     LiquidDysplay2004 lcd;
     void init();
     static void start(void *parameter);
@@ -44,7 +45,7 @@ private:
     void printGameState();
     void printPoints(String teamName);
     void loop();
-    bool capturing(String teamName, uint8_t teamButton, int &teamPoints, int &opponentPoints, bool isNeutralizing = false);
+    bool capturing(String teamName, uint8_t teamButton, uint8_t opponentButton, int &teamPoints, int &opponentPoints, bool isNeutralizing);
     bool teamIsCapturingZone(bool isNeutralizing = false);
     void isCaptured();
 };
