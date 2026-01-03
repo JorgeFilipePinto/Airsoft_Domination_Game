@@ -1,43 +1,55 @@
 #include "leds.h"
 
-LEDs::LEDs(uint8_t redPin, uint8_t greenPin, uint8_t bluePin) : _redPin(redPin), _greenPin(greenPin), _bluePin(bluePin)
+namespace
+{
+    template<uint8_t DataPin>
+    CLEDController *getStaticController()
+    {
+        static WS2812B<DataPin, GRB> controller;
+        return &controller;
+    }
+
+    CLEDController *controllerForPin(uint8_t pin)
+    {
+        switch (pin)
+        {
+        case 14:
+            return getStaticController<14>();
+        case 27:
+            return getStaticController<27>();
+        default:
+            return nullptr;
+        }
+    }
+}
+
+LEDs::LEDs(uint8_t numLedsStrip1, uint8_t numLedsStrip2, uint8_t stripPin1, uint8_t stripPin2) : _numLedsStrip1(numLedsStrip1), _numLedsStrip2(numLedsStrip2), _stripPin1(stripPin1), _stripPin2(stripPin2)
 {
 }
 
 
 void LEDs::init()
 {
-    pinMode(_redPin, OUTPUT);
-    pinMode(_greenPin, OUTPUT);
-    pinMode(_bluePin, OUTPUT);
-    turnOff();
-}
+    pinMode(_stripPin1, OUTPUT);
+    pinMode(_stripPin2, OUTPUT);
+    _strip1Leds = new CRGB[_numLedsStrip1];
+    _strip2Leds = new CRGB[_numLedsStrip2];
 
+    CLEDController *strip1Controller = controllerForPin(_stripPin1);
+    CLEDController *strip2Controller = controllerForPin(_stripPin2);
 
-void LEDs::setColor(uint8_t red, uint8_t green, uint8_t blue)
-{
-    digitalWrite(_redPin, red);
-    digitalWrite(_greenPin, green);
-    digitalWrite(_bluePin, blue);
-}
+    if (strip1Controller != nullptr)
+    {
+        FastLED.addLeds(strip1Controller, _strip1Leds, _numLedsStrip1);
+    }
+    if (strip2Controller != nullptr)
+    {
+        FastLED.addLeds(strip2Controller, _strip2Leds, _numLedsStrip2);
+    }
 
-void LEDs::blinkColor(uint8_t red, uint8_t green, uint8_t blue, unsigned int delayTime)
-{
-    setColor(red, green, blue);
-    delay(delayTime);
-    turnOff();
-    delay(delayTime);
-}
-
-
-void LEDs::staticColor(uint8_t red, uint8_t green, uint8_t blue, unsigned int delayTime)
-{
-    setColor(red, green, blue);
-    delay(delayTime);
-}
-
-
-void LEDs::turnOff()
-{
-    setColor(0, 0, 0);
+    if(strip1Controller != nullptr || strip2Controller != nullptr)
+    {
+        FastLED.setBrightness(_bringthness);
+        FastLED.clear(true);
+    }
 }

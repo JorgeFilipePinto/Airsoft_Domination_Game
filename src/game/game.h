@@ -1,9 +1,9 @@
+#pragma once
 #include "config/config.h"
 #include "leds/leds.h"
 #include "buttons/buttons.h"
 #include "buzzer/buzzer.h"
 #include "lcd/liquidDysplay2004.h"
-#pragma once
 
 enum GameState
 {
@@ -29,7 +29,7 @@ public:
     bool newDataAvailable = true;
     bool changeTeam = false;
     Buttons buttons = Buttons(team1Button, team2Button, "NC", "team1", "team2");
-    LEDs leds = LEDs(12, 13, 14);
+    LEDs leds = LEDs(22, 22, 27, 14);
     Buzzer buzzer = Buzzer(18);
     LiquidDysplay2004 lcd;
     void init();
