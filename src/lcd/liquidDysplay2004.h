@@ -1,9 +1,8 @@
+#pragma once
 #include <Wire.h>
 #include <LCD.h>
 #include <LiquidCrystal_I2C.h>
 #include "messageStruct.h"
-#pragma once
-
 
 
 class LiquidDysplay2004 {

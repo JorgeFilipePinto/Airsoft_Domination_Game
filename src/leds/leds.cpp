@@ -25,9 +25,8 @@ namespace
     }
 }
 
-LEDs::LEDs(uint8_t numLedsStrip1, uint8_t numLedsStrip2, uint8_t stripPin1, uint8_t stripPin2) : _numLedsStrip1(numLedsStrip1), _numLedsStrip2(numLedsStrip2), _stripPin1(stripPin1), _stripPin2(stripPin2)
-{
-}
+LEDs::LEDs(uint8_t numLedsStrip1, uint8_t numLedsStrip2, uint8_t stripPin1, uint8_t stripPin2) : 
+_numLedsStrip1(numLedsStrip1), _numLedsStrip2(numLedsStrip2), _stripPin1(stripPin1), _stripPin2(stripPin2) { }
 
 void LEDs::init()
 {
