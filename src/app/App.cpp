@@ -1,7 +1,6 @@
 #include "App.h"
 #include "wifi/OTA/OTA.h"
 #include "game/game.h"
-#include "config/config.h"
 
 Game game = Game();
 

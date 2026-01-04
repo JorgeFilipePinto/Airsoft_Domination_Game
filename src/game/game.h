@@ -17,7 +17,6 @@ enum GameState
 class Game
 {
 public:
-    GameState currentGameState = IDLE;
     int pointsTeam1;
     int pointsTeam2;
     int lastPointsTeam1 = 0;
@@ -28,14 +27,19 @@ public:
 
     bool newDataAvailable = true;
     bool changeTeam = false;
+
+    QueueHandle_t ledQueue;
+    QueueHandle_t buzzerQueue;
+    GameState currentGameState = IDLE;
     Buttons buttons = Buttons(team1Button, team2Button, "NC", "team1", "team2");
-    LEDs leds = LEDs(22, 22, 27, 14);
+    //LEDs leds = LEDs(22, 22, 27, 14);
     Buzzer buzzer = Buzzer(18);
     LiquidDysplay2004 lcd;
     void init();
     static void start(void *parameter);
 
 private:
+    uint8_t _fifoSize = 10;
     static Game *instance;
     GameState lastCurrentGameState = IDLE;
     bool team1InZone = false;
@@ -48,4 +52,5 @@ private:
     bool capturing(String teamName, uint8_t teamButton, uint8_t opponentButton, int &teamPoints, int &opponentPoints, bool isNeutralizing);
     bool teamIsCapturingZone(bool isNeutralizing = false);
     void isCaptured();
+    void createTasks();
 };

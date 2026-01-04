@@ -2,9 +2,32 @@
 #include "lcd/liquidDysplay2004.h"
 
 Game *Game::instance = nullptr;
+LEDs leds = LEDs(22, 22, 27, 14);
 
 void Game::init()
 {
+    leds.init();
+    createTasks();
+
+    ledQueue = xQueueCreate(_fifoSize, sizeof(uint8_t));
+    if (ledQueue == nullptr)
+    {
+        Serial.println("[Game::init] Failed to create LED queue.");
+    }
+    else
+    {
+        Serial.println("[Game::init] LED queue created successfully.");
+        leds.setQueue(ledQueue);
+    }
+    buzzerQueue = xQueueCreate(_fifoSize, sizeof(uint8_t));
+    if (buzzerQueue == nullptr)
+    {
+        Serial.println("[Game::init] Failed to create Buzzer queue.");
+    }
+    else
+    {
+        Serial.println("[Game::init] Buzzer queue created successfully.");
+    }
     Serial.println("[Game::init] Iniciando...");
     instance = this;
     currentGameState = IDLE;
@@ -20,12 +43,11 @@ void Game::init()
     lcd.init();
     buzzer.init();
     buttons.init();
-    leds.init();
+
     lcd.print(welcomeMessages, 4);
     delay(3000);
     newDataAvailable = true;
 }
-
 
 void Game::start(void *parameter)
 {
@@ -41,7 +63,6 @@ void Game::start(void *parameter)
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
-
 
 void Game::loop()
 {
@@ -68,7 +89,8 @@ void Game::loop()
             lastCurrentGameState = NEUTRALIZED;
             newDataAvailable = true;
             Serial.println("A neutralizing state has started.");
-        } else if(buttons.isPressed(team1Button) || buttons.isPressed(team2Button))
+        }
+        else if (buttons.isPressed(team1Button) || buttons.isPressed(team2Button))
         {
             buzzer.warning();
             Serial.println("Button Team 1 pressed.");
@@ -127,7 +149,7 @@ void Game::loop()
     }
     case CAPTURED1:
     {
-        if(changeTeam)
+        if (changeTeam)
         {
             buzzer.warning();
             changeTeam = false;
@@ -141,7 +163,7 @@ void Game::loop()
         {
             lastCurrentGameState = currentGameState;
             const bool captured = teamIsCapturingZone(true);
-            if(!captured)
+            if (!captured)
             {
                 newDataAvailable = true;
             }
@@ -150,7 +172,7 @@ void Game::loop()
     }
     case CAPTURED2:
     {
-        if(changeTeam)
+        if (changeTeam)
         {
             buzzer.warning();
             changeTeam = false;
@@ -164,7 +186,7 @@ void Game::loop()
         {
             lastCurrentGameState = currentGameState;
             const bool captured = teamIsCapturingZone(true);
-            if(!captured)
+            if (!captured)
             {
                 newDataAvailable = true;
             }
@@ -174,7 +196,6 @@ void Game::loop()
     }
     printGameState();
 }
-
 
 void Game::printGameState()
 {
@@ -192,7 +213,6 @@ void Game::printGameState()
     }
 }
 
-
 void Game::printPoints(String teamName)
 {
     lastPointsTeam1 = pointsTeam1;
@@ -206,7 +226,6 @@ void Game::printPoints(String teamName)
     lcd.printAt("Team2: " + String(pointsTeam2) + "   ", 0, 3);
 }
 
-
 bool Game::teamIsCapturingZone(bool isNeutralizing)
 {
     if (buttons.isPressed(team1Button))
@@ -215,10 +234,12 @@ bool Game::teamIsCapturingZone(bool isNeutralizing)
         const bool captured = capturing("Team 1", team1Button, team2Button, pointsTeam1, pointsTeam2, isNeutralizing);
         if (captured)
         {
-            if(isNeutralizing)
+            if (isNeutralizing)
             {
                 currentGameState = NEUTRALIZED;
-            } else {
+            }
+            else
+            {
                 currentGameState = CAPTURED1;
                 changeTeam = true;
             }
@@ -234,10 +255,12 @@ bool Game::teamIsCapturingZone(bool isNeutralizing)
         const bool captured = capturing("Team 2", team2Button, team1Button, pointsTeam2, pointsTeam1, isNeutralizing);
         if (captured)
         {
-            if(isNeutralizing)
+            if (isNeutralizing)
             {
                 currentGameState = NEUTRALIZED;
-            } else {
+            }
+            else
+            {
                 currentGameState = CAPTURED2;
                 changeTeam = true;
             }
@@ -248,7 +271,6 @@ bool Game::teamIsCapturingZone(bool isNeutralizing)
     }
     return false;
 }
-
 
 bool Game::capturing(String teamName, uint8_t teamButton, uint8_t opponentButton, int &teamPoints, int &opponentPoints, bool isNeutralizing)
 {
@@ -266,7 +288,7 @@ bool Game::capturing(String teamName, uint8_t teamButton, uint8_t opponentButton
     {
         for (int j = 1; j <= 5; j++)
         {
-            if(buttons.isPressed(opponentButton))
+            if (buttons.isPressed(opponentButton))
             {
                 buzzer.warning();
                 Serial.println("Capturing aborted by opponent button press.");
@@ -274,7 +296,7 @@ bool Game::capturing(String teamName, uint8_t teamButton, uint8_t opponentButton
             }
             if (!buttons.isPressed(teamButton))
             {
-                if(lastCurrentGameState != NEUTRALIZED)
+                if (lastCurrentGameState != NEUTRALIZED)
                 {
                     (isNeutralizing ? teamPoints += 50 : opponentPoints += 50);
                 }
@@ -290,8 +312,19 @@ bool Game::capturing(String teamName, uint8_t teamButton, uint8_t opponentButton
     return true;
 }
 
-
 void Game::isCaptured()
 {
     // Implementar lógica para verificar se a zona foi capturada
+}
+
+void Game::createTasks()
+{
+    xTaskCreatePinnedToCore(
+        LEDs::loop,
+        "LEDs",
+        4096,
+        NULL,
+        1,
+        NULL,
+        1);
 }

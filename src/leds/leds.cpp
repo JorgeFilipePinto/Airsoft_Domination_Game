@@ -1,8 +1,10 @@
 #include "leds.h"
 
+LEDs *LEDs::_instance = nullptr;
+QueueHandle_t LEDs::_queue = nullptr;
 namespace
 {
-    template<uint8_t DataPin>
+    template <uint8_t DataPin>
     CLEDController *getStaticController()
     {
         static WS2812B<DataPin, GRB> controller;
@@ -27,9 +29,9 @@ LEDs::LEDs(uint8_t numLedsStrip1, uint8_t numLedsStrip2, uint8_t stripPin1, uint
 {
 }
 
-
 void LEDs::init()
 {
+    _instance = this;
     pinMode(_stripPin1, OUTPUT);
     pinMode(_stripPin2, OUTPUT);
     _strip1Leds = new CRGB[_numLedsStrip1];
@@ -47,9 +49,21 @@ void LEDs::init()
         FastLED.addLeds(strip2Controller, _strip2Leds, _numLedsStrip2);
     }
 
-    if(strip1Controller != nullptr || strip2Controller != nullptr)
+    if (strip1Controller != nullptr || strip2Controller != nullptr)
     {
         FastLED.setBrightness(_bringthness);
         FastLED.clear(true);
+    }
+}
+
+void LEDs::setQueue(QueueHandle_t queue)
+{
+    _queue = queue;
+}
+
+void LEDs::loop(void *parameter)
+{
+    if (_queue != nullptr && uxQueueMessagesWaiting(_queue) > 0)
+    {
     }
 }
