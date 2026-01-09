@@ -12,6 +12,7 @@ enum LEDMODE {
 struct LedController {
     LEDMODE mode;
     uint8_t numberOfChainLeds = 1;
+    bool reverse = false;
     CRGB color;
     uint16_t delay;
 };

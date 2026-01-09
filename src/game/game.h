@@ -39,7 +39,7 @@ public:
     static void start(void *parameter);
 
 private:
-    uint8_t _fifoSize = 10;
+    uint8_t _fifoSize = 1;
     static Game *instance;
     GameState lastCurrentGameState = IDLE;
     bool team1InZone = false;

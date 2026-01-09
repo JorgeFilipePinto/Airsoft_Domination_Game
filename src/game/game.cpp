@@ -95,6 +95,11 @@ void Game::loop()
             lastCurrentGameState = NEUTRALIZED;
             newDataAvailable = true;
             Serial.println("A neutralizing state has started.");
+
+            ledController.mode = BLINK;
+            ledController.color = CRGB::Green;
+            ledController.delay = 200;
+            xQueueSend(ledQueue, &ledController, portMAX_DELAY);
         }
         else if (buttons.isPressed(team1Button) || buttons.isPressed(team2Button))
         {
@@ -108,7 +113,12 @@ void Game::loop()
         MessageStruct idleMessages[] = {
             {"Neutral", 6, 1},
             {"Team1: " + String(pointsTeam1), 0, 2},
-            {"Team2: " + String(pointsTeam2), 0, 3}};
+            {"Team2: " + String(pointsTeam2), 0, 3}
+        };
+        ledController.mode = STATIC;
+        ledController.color = CRGB::White;
+        ledController.reverse = false;
+        xQueueSend(ledQueue, &ledController, portMAX_DELAY);
         if (newDataAvailable)
         {
             lcd.clearLine(1);
@@ -155,6 +165,9 @@ void Game::loop()
     }
     case CAPTURED1:
     {
+        ledController.mode = STATIC;
+        ledController.color = CRGB::Blue;
+        xQueueSend(ledQueue, &ledController, portMAX_DELAY);
         if (changeTeam)
         {
             buzzer.warning();
@@ -167,6 +180,7 @@ void Game::loop()
         }
         if (buttons.isPressed(team2Button))
         {
+            ledController.reverse = true;
             lastCurrentGameState = currentGameState;
             const bool captured = teamIsCapturingZone(true);
             if (!captured)
@@ -178,6 +192,9 @@ void Game::loop()
     }
     case CAPTURED2:
     {
+        ledController.mode = STATIC;
+        ledController.color = CRGB::Red;
+        xQueueSend(ledQueue, &ledController, portMAX_DELAY);
         if (changeTeam)
         {
             buzzer.warning();
@@ -190,6 +207,7 @@ void Game::loop()
         }
         if (buttons.isPressed(team1Button))
         {
+            ledController.reverse = true;
             lastCurrentGameState = currentGameState;
             const bool captured = teamIsCapturingZone(true);
             if (!captured)
@@ -236,6 +254,10 @@ bool Game::teamIsCapturingZone(bool isNeutralizing)
 {
     if (buttons.isPressed(team1Button))
     {
+        ledController.mode = CHAINING;
+        ledController.color = CRGB::Blue;
+        ledController.delay = 4;
+        xQueueSend(ledQueue, &ledController, portMAX_DELAY);
         newDataAvailable = true;
         const bool captured = capturing("Team 1", team1Button, team2Button, pointsTeam1, pointsTeam2, isNeutralizing);
         if (captured)
@@ -257,6 +279,10 @@ bool Game::teamIsCapturingZone(bool isNeutralizing)
 
     if (buttons.isPressed(team2Button))
     {
+        ledController.mode = CHAINING;
+        ledController.color = CRGB::Red;
+        ledController.delay = 4;
+        xQueueSend(ledQueue, &ledController, portMAX_DELAY);
         newDataAvailable = true;
         const bool captured = capturing("Team 2", team2Button, team1Button, pointsTeam2, pointsTeam1, isNeutralizing);
         if (captured)

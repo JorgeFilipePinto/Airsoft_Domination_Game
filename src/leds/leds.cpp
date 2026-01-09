@@ -49,20 +49,24 @@ void LEDs::loop()
     {
     case OFF:
         turnOff();
-        delay(100);
+        delay(10);
         break;
     case BLINK:
         blinkColor();
         break;
     case STATIC:
         staticColor();
-        delay(100);
+        delay(20);
         break;
     case CHAINING:
-        chainingEffect();
+         if (_currentReverse) {
+            reversingChainingEffect();
+         } else {
+            chainingEffect();
+         }
         break;
     default:
-        delay(100);
+        delay(20);
         break;
     }
 }
@@ -76,8 +80,9 @@ void LEDs::updateMode()
         _currentMode = ledController.mode;
         _currentColor = ledController.color;
         _currentDelay = ledController.delay;
-        _chainPosition = 0;
+        ledController.reverse ? _chainPosition = _numLedsStrip1 : _chainPosition = 0;
         _currentNumberOfChainLeds = ledController.numberOfChainLeds;
+        _currentReverse = ledController.reverse;
     }
 }
 
@@ -110,6 +115,35 @@ void LEDs::chainingEffect()
 
     delay(_currentDelay);
 }
+
+
+void LEDs::reversingChainingEffect()
+{
+    fill_solid(_strip1Leds, _numLedsStrip1, CRGB::Black);
+    fill_solid(_strip2Leds, _numLedsStrip2, CRGB::Black);
+
+    for (int i = 0; i < _currentNumberOfChainLeds; i++)
+    {
+        int index1 = (_chainPosition - i + _numLedsStrip1) % _numLedsStrip1;
+        int index2 = (_chainPosition - i + _numLedsStrip2) % _numLedsStrip2;
+
+        _strip1Leds[index1] = CRGB(_currentColor);
+        _strip2Leds[index2] = CRGB(_currentColor);
+    }
+
+    FastLED.show();
+
+    // Move para trás
+    _chainPosition--;
+
+    if (_chainPosition < 0)
+    {
+        _chainPosition = max(_numLedsStrip1, _numLedsStrip2) - 1;
+    }
+
+    delay(_currentDelay);
+}
+
 
 
 /*
@@ -162,9 +196,6 @@ void LEDs::blinkColor()
         for (int i = 0; i < _numLedsStrip1; i++)
         {
             _strip1Leds[i] = CRGB(_currentColor);
-        }
-        for (int i = 0; i < _numLedsStrip2; i++)
-        {
             _strip2Leds[i] = CRGB(_currentColor);
         }
     }
@@ -173,9 +204,6 @@ void LEDs::blinkColor()
         for (int i = 0; i < _numLedsStrip1; i++)
         {
             _strip1Leds[i] = CRGB::Black;
-        }
-        for (int i = 0; i < _numLedsStrip2; i++)
-        {
             _strip2Leds[i] = CRGB::Black;
         }
     }
@@ -187,22 +215,11 @@ void LEDs::blinkColor()
 
 void LEDs::staticColor()
 {
-    for (int i = 0; i < _numLedsStrip1; i += 3)
+    for (int i = 0; i < _numLedsStrip1; i ++)
     {
-        for(int j = 0; j < 3; j++) {
-            if(i + j < _numLedsStrip1) {
-                _strip1Leds[i + j] = CRGB(_currentColor);
-            }
-        }
-    }
-    FastLED.show();
-    for (int i = 0; i < _numLedsStrip2; i += 3)
-    {
-        for(int j = 0; j < 3; j++) {
-            if(i + j < _numLedsStrip2) {
-                _strip2Leds[i + j] = CRGB(_currentColor);
-            }
-        }
+        _strip1Leds[i] = CRGB(_currentColor);
+        _strip2Leds[i] = CRGB(_currentColor);
+
     }
     FastLED.show();
 }
