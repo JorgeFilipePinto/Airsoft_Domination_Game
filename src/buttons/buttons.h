@@ -1,5 +1,5 @@
-#include <Arduino.h>
 #pragma once
+#include <Arduino.h>
 
 
 class Buttons
