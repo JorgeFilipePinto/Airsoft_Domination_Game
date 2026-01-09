@@ -215,11 +215,7 @@ void LEDs::blinkColor()
 
 void LEDs::staticColor()
 {
-    for (int i = 0; i < _numLedsStrip1; i ++)
-    {
-        _strip1Leds[i] = CRGB(_currentColor);
-        _strip2Leds[i] = CRGB(_currentColor);
-
-    }
+    fill_solid(_strip1Leds, _numLedsStrip1, _currentColor);
+    //fill_solid(_strip2Leds, _numLedsStrip2, _currentColor);
     FastLED.show();
 }

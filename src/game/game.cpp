@@ -2,7 +2,7 @@
 #include "lcd/liquidDysplay2004.h"
 
 Game *Game::instance = nullptr;
-LEDs leds = LEDs(22, 22, 14, 27);
+LEDs leds = LEDs(23, 23, 14, 27);
 
 void Game::init()
 {
