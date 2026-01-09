@@ -330,7 +330,7 @@ bool Game::capturing(String teamName, uint8_t teamButton, uint8_t opponentButton
             {
                 if (lastCurrentGameState != NEUTRALIZED)
                 {
-                    (isNeutralizing ? teamPoints += 50 : opponentPoints += 50);
+                    (isNeutralizing ? opponentPoints += 50 : teamPoints += 50);
                 }
                 return false;
             }
