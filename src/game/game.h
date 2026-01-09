@@ -45,7 +45,7 @@ private:
     bool team1InZone = false;
     bool team2InZone = false;
 
-
+    LedController ledController;
     void printGameState();
     void printPoints(String teamName);
     void loop();

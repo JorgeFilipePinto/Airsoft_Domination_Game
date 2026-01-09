@@ -2,14 +2,12 @@
 #include "lcd/liquidDysplay2004.h"
 
 Game *Game::instance = nullptr;
-LEDs leds = LEDs(22, 22, 27, 14);
+LEDs leds = LEDs(22, 22, 14, 27);
 
 void Game::init()
 {
     leds.init();
-    createTasks();
-
-    ledQueue = xQueueCreate(_fifoSize, sizeof(uint8_t));
+    ledQueue = xQueueCreate(_fifoSize, sizeof(LedController));
     if (ledQueue == nullptr)
     {
         Serial.println("[Game::init] Failed to create LED queue.");
@@ -47,6 +45,14 @@ void Game::init()
     lcd.print(welcomeMessages, 4);
     delay(3000);
     newDataAvailable = true;
+    
+    ledController.mode = CHAINING;
+    ledController.color = CRGB::White;
+    ledController.delay = 60;
+    ledController.numberOfChainLeds = 5;
+    xQueueSend(ledQueue, &ledController, portMAX_DELAY);
+    
+    createTasks();
 }
 
 void Game::start(void *parameter)
@@ -320,7 +326,7 @@ void Game::isCaptured()
 void Game::createTasks()
 {
     xTaskCreatePinnedToCore(
-        LEDs::loop,
+        LEDs::start,
         "LEDs",
         4096,
         NULL,
